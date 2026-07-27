@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf /private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/kz-rates-scaffold)",
+      "Bash(npx --yes create-next-app@latest kz-rates-scaffold --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Read(//Users/In Young Choi/.npm/_cacache/content-v2/sha512/04/**)",
+      "Read(//Users/In Young Choi/.npm/**)",
+      "Bash(rm -rf /private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/kz-rates-scaffold /private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/npm-cache)",
+      "Bash(npm_config_cache=/private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/npm-cache npx --yes create-next-app@latest kz-rates-scaffold --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(npm_config_cache=/private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/npm-cache npx --yes create-next-app@14 kz-rates-scaffold --typescript --tailwind --eslint --app --src-dir --import-alias @/* --use-npm)",
+      "Bash(npm_config_cache=\"/private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/npm-cache\" npx --yes shadcn@latest init -d -b neutral)",
+      "Bash(npm_config_cache=\"/private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/npm-cache\" npx --yes shadcn@latest init -d)",
+      "Bash(npm_config_cache=\"/private/tmp/claude-501/-Users-In-Young-Choi-Desktop-kz-rates/07c03457-7a18-41d2-aaa9-f5d384efcfd0/scratchpad/npm-cache\" npm install)",
+      "Bash(npx tsc *)",
+      "Bash(npx next *)",
+      "Bash(npm run *)",
+      "Bash(curl -sS -w \"\\\\nHTTP_STATUS:%{http_code}\\\\n\" http://localhost:3000/api/bcc --max-time 20)",
+      "Read(//private/tmp/**)",
+      "Bash(cp /tmp/test_scraper.mjs \"/Users/In Young Choi/Desktop/kz–rates/test_scraper.mjs\")",
+      "Bash(node test_scraper.mjs)",
+      "Bash(rm test_scraper.mjs)",
+      "Bash(curl -sS -L -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/124.0 Safari/537.36\" \"https://www.bcc.kz/\" --max-time 20 -o /tmp/bcc_home.html -w \"HTTP_STATUS:%{http_code}\\\\n\")",
+      "Read(//tmp/**)",
+      "Bash(curl -sS -L -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/124.0 Safari/537.36\" -I \"https://www.bcc.kz/\" --max-time 15)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP_STATUS:%{http_code} FINAL_URL:%{url_effective}\\\\n\" -L -A \"Mozilla/5.0\" \"https://www.bcc.kz/ru/\" --max-time 15)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP_STATUS:%{http_code} FINAL_URL:%{url_effective}\\\\n\" -L -A \"Mozilla/5.0\" -H \"Accept-Language: ru-RU,ru;q=0.9\" \"https://www.bcc.kz/\" --max-time 15)",
+      "Bash(curl -sS -X POST https://www.bcc.kz/kz/ -A Mozilla/5.0 -H 'X-OCTOBER-REQUEST-HANDLER: onChangeLang' -H 'X-Requested-With: XMLHttpRequest' -H 'Content-Type: application/x-www-form-urlencoded' -d site=ru -c /tmp/bcc_cookies.txt -b /tmp/bcc_cookies.txt --max-time 15 -o /tmp/bcc_lang_response.json -w 'HTTP_STATUS:%{http_code}\\\\n')",
+      "Bash(npm install *)",
+      "Bash(curl -sS -w \"\\\\nHTTP_STATUS:%{http_code}\\\\n\" http://localhost:3000/api/nbk --max-time 20)",
+      "Bash(curl -sS http://localhost:3000/api/nbk --max-time 20)",
+      "Bash(curl -sS -A \"Mozilla/5.0\" \"https://ifin.kz/exchange/astana\" --max-time 20 -o /tmp/ifin_astana.html -w \"astana: %{http_code}\\\\n\")",
+      "Bash(curl -sS -A \"Mozilla/5.0\" \"https://ifin.kz/exchange/karaganda\" --max-time 20 -o /tmp/ifin_karaganda.html -w \"karaganda: %{http_code}\\\\n\")",
+      "Bash(curl -sS \"http://localhost:3000/api/ifin?city=karaganda&currency=USD\" --max-time 30)",
+      "Bash(python3 -c ' *)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

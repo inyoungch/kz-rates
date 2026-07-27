@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /*
+   * Committed dark theme inspired by the reference: near-black navy surfaces
+   * layered by lightness (page < card < muted < secondary), a lavender accent,
+   * and green for positive rate highlights.
+   */
+  :root {
+    --background: 231 24% 7%;
+    --foreground: 230 24% 96%;
+    --card: 230 16% 10%;
+    --card-foreground: 230 24% 96%;
+    --popover: 230 16% 11%;
+    --popover-foreground: 230 24% 96%;
+    --primary: 250 74% 82%;
+    --primary-foreground: 231 45% 12%;
+    --secondary: 230 12% 18%;
+    --secondary-foreground: 230 20% 92%;
+    --muted: 230 13% 14%;
+    --muted-foreground: 233 10% 62%;
+    --accent: 250 38% 24%;
+    --accent-foreground: 250 70% 90%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 152 58% 47%;
+    --success-foreground: 150 45% 10%;
+    --border: 231 13% 18%;
+    --input: 231 13% 22%;
+    --ring: 250 74% 74%;
+    --radius: 0.85rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Ambient violet glow near the top, echoing the reference's dark hero. */
+    background-image: radial-gradient(
+      ellipse 90% 55% at 50% -12%,
+      hsl(252 62% 22% / 0.35),
+      transparent 72%
+    );
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+}
