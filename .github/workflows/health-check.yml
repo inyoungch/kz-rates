@@ -1,0 +1,78 @@
+name: Health check
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify /api/bcc and /api/ifin are serving live data
+        run: |
+          set -uo pipefail
+
+          FAILED=0
+          WORKDIR=$(mktemp -d)
+
+          # Fetches a URL and, on success, writes the response body to
+          # $WORKDIR/<name>.json. Any transport error or non-200 status is
+          # reported immediately and marks the run as failed.
+          check_endpoint() {
+            local name="$1" url="$2"
+            echo "Checking $name: $url"
+
+            local raw http_code body
+            raw=$(curl -sS --max-time 20 -w '\n%{http_code}' "$url" 2>&1)
+            if [ $? -ne 0 ]; then
+              echo "::error::$name ($url) request failed: $raw"
+              FAILED=1
+              return
+            fi
+
+            http_code=$(echo "$raw" | tail -n1)
+            body=$(echo "$raw" | sed '$d')
+
+            if [ "$http_code" != "200" ]; then
+              echo "::error::$name ($url) returned HTTP $http_code: $body"
+              FAILED=1
+              return
+            fi
+
+            echo "$body" > "$WORKDIR/$name.json"
+          }
+
+          # Checks a single field in a previously-fetched JSON file and fails
+          # (with the full response for context) if it isn't "live".
+          check_source_field() {
+            local name="$1" file="$2" field="$3"
+            [ -f "$file" ] || return
+
+            local value
+            value=$(jq -r "$field" "$file")
+            if [ "$value" != "live" ]; then
+              echo "::error::$name $field is '$value' (expected 'live'). Full response: $(cat "$file")"
+              FAILED=1
+            fi
+          }
+
+          check_endpoint bcc "https://kz-rates.vercel.app/api/bcc"
+          check_source_field bcc "$WORKDIR/bcc.json" ".meta.fxSource"
+          check_source_field bcc "$WORKDIR/bcc.json" ".meta.branchSource"
+          check_source_field bcc "$WORKDIR/bcc.json" ".meta.appSource"
+
+          check_endpoint ifin "https://kz-rates.vercel.app/api/ifin?city=almaty"
+          check_source_field ifin "$WORKDIR/ifin.json" ".meta.source"
+
+          rm -rf "$WORKDIR"
+
+          if [ "$FAILED" = "1" ]; then
+            echo "Health check FAILED — see ::error:: lines above."
+            exit 1
+          fi
+
+          echo "Health check passed — all sources live."
