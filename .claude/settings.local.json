@@ -33,7 +33,11 @@
       "Bash(curl -sS \"http://localhost:3000/api/ifin?city=karaganda&currency=USD\" --max-time 30)",
       "Bash(python3 -c ' *)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(curl -sS -o /dev/null -w \"HTML: %{http_code}\\\\n\" https://kz-rates.vercel.app --max-time 20)",
+      "Bash(curl -sS -w \"\\\\nHTTP: %{http_code}\\\\n\" https://kz-rates.vercel.app/api/nbk --max-time 20)",
+      "Bash(curl -sS -w \"\\\\nHTTP: %{http_code}\\\\n\" https://kz-rates.vercel.app/api/bcc --max-time 20)",
+      "Bash(curl -sS -w \"\\\\nHTTP: %{http_code}\\\\n\" \"https://kz-rates.vercel.app/api/ifin?city=almaty&currency=USD\" --max-time 25)"
     ]
   }
 }
