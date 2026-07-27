@@ -7,7 +7,7 @@ import { formatRate } from "@/lib/format";
 import type { RatePair } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type Source = "live" | "mock";
+type Source = "live" | "stale" | "mock";
 
 interface BccBlockProps {
   fxRate: RatePair;
@@ -50,10 +50,10 @@ export function BccBlock({
           bidOffer
           disabled={!fxOpen}
           disabledNote="Закрыт до 10:30"
-          isFallback={fxSource === "mock"}
+          isFallback={fxSource !== "live"}
         />
-        <RateRow label="БЦК В отделении" rate={branchRate} isFallback={branchSource === "mock"} />
-        <RateRow label="БЦК Приложение" rate={appRate} isFallback={appSource === "mock"} />
+        <RateRow label="БЦК В отделении" rate={branchRate} isFallback={branchSource !== "live"} />
+        <RateRow label="БЦК Приложение" rate={appRate} isFallback={appSource !== "live"} />
       </CardContent>
     </Card>
   );

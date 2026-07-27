@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { BCC_FX, BCC_BRANCH, BCC_APP } from "@/lib/data/mock";
 import type { Currency, RatePair } from "@/lib/types";
 
-type Source = "live" | "mock";
+type Source = "live" | "stale" | "mock";
 
 interface BccData {
   fx: Record<Currency, RatePair>;

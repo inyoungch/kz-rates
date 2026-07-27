@@ -7,7 +7,7 @@ import type { Currency, RatePair } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-type Source = "live" | "mock";
+type Source = "live" | "stale" | "mock";
 
 interface BccApiResponse {
   fx: Record<Currency, RatePair>;
@@ -27,7 +27,7 @@ interface HomepageRates {
 }
 
 const HOMEPAGE_CACHE_TTL_MS = 15 * 60 * 1000;
-let homepageCache: { data: HomepageRates; expiresAt: number } | null = null;
+let homepageCache: { data: HomepageRates; fetchedAt: number } | null = null;
 
 function toRatePairs(entries: ScrapedRate[]): Record<Currency, RatePair> {
   const result = {} as Record<Currency, RatePair>;
@@ -38,15 +38,31 @@ function toRatePairs(entries: ScrapedRate[]): Record<Currency, RatePair> {
 }
 
 // Branch and app rates come from the same homepage request, so they share a
-// single cache entry and a single success/failure outcome.
-async function getCachedHomepageRates(): Promise<HomepageRates> {
-  if (homepageCache && homepageCache.expiresAt > Date.now()) {
-    return homepageCache.data;
+// single cache entry and a single success/failure outcome. If a fresh scrape
+// fails (e.g. bcc.kz blocking the request), fall back to the last successful
+// scrape rather than the mock data — mock is only used if we've never
+// scraped successfully at all.
+async function getCachedHomepageRates(): Promise<{ data: HomepageRates; source: "live" | "stale" }> {
+  const cached = homepageCache;
+  if (cached && Date.now() - cached.fetchedAt < HOMEPAGE_CACHE_TTL_MS) {
+    return { data: cached.data, source: "live" };
   }
-  const { branch, app } = await scrapeHomepageRates();
-  const data: HomepageRates = { branch: toRatePairs(branch), app: toRatePairs(app) };
-  homepageCache = { data, expiresAt: Date.now() + HOMEPAGE_CACHE_TTL_MS };
-  return data;
+
+  try {
+    const { branch, app } = await scrapeHomepageRates();
+    const data: HomepageRates = { branch: toRatePairs(branch), app: toRatePairs(app) };
+    homepageCache = { data, fetchedAt: Date.now() };
+    return { data, source: "live" };
+  } catch (err) {
+    if (cached) {
+      console.error(
+        `[bcc] Homepage scrape failed, serving stale data from ${new Date(cached.fetchedAt).toISOString()}:`,
+        err
+      );
+      return { data: cached.data, source: "stale" };
+    }
+    throw err;
+  }
 }
 
 export async function GET() {
@@ -71,10 +87,10 @@ export async function GET() {
   let branchSource: Source;
   let appSource: Source;
   if (homepageResult.status === "fulfilled") {
-    branch = homepageResult.value.branch;
-    app = homepageResult.value.app;
-    branchSource = "live";
-    appSource = "live";
+    branch = homepageResult.value.data.branch;
+    app = homepageResult.value.data.app;
+    branchSource = homepageResult.value.source;
+    appSource = homepageResult.value.source;
   } else {
     console.error(
       "[bcc] Homepage rates scrape failed, falling back to mock:",

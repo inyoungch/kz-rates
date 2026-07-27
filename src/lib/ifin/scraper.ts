@@ -2,6 +2,7 @@ import * as cheerio from "cheerio";
 import type { CheerioAPI, Cheerio } from "cheerio";
 import type { Element } from "domhandler";
 
+import { scrapeHeaders } from "@/lib/scrape-headers";
 import type { City, Currency, RatePair, SourceType } from "@/lib/types";
 
 const CITY_URLS: Record<City, string> = {
@@ -10,8 +11,7 @@ const CITY_URLS: Record<City, string> = {
   karaganda: "https://ifin.kz/exchange/karaganda",
 };
 
-const USER_AGENT =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+const IFIN_HEADERS = scrapeHeaders("https://ifin.kz/");
 
 const CURRENCIES: Currency[] = ["USD", "EUR", "RUB"];
 
@@ -30,7 +30,7 @@ export interface ScrapedIfinEntry {
 export async function scrapeIfinCity(city: City): Promise<ScrapedIfinEntry[]> {
   const url = CITY_URLS[city];
   const res = await fetch(url, {
-    headers: { "User-Agent": USER_AGENT },
+    headers: IFIN_HEADERS,
     cache: "no-store",
   });
   const text = await res.text();

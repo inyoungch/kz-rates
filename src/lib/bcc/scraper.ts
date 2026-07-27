@@ -2,6 +2,7 @@ import * as cheerio from "cheerio";
 import type { CheerioAPI, Cheerio } from "cheerio";
 import type { Element } from "domhandler";
 
+import { scrapeHeaders } from "@/lib/scrape-headers";
 import type { Currency } from "@/lib/types";
 
 const HOME_URL = "https://www.bcc.kz/";
@@ -9,11 +10,10 @@ const BRANCH_HEADING = "Наличные валюты в отделении";
 const APP_HEADING = "Курсы приложения bcc.kz";
 const CURRENCIES: Currency[] = ["USD", "EUR", "RUB"];
 
-// bcc.kz blocks requests without a browser-like User-Agent, and defaults to
-// the Kazakh-language site (redirecting to /kz/) unless the October CMS
-// session has an explicit language preference set via its AJAX framework.
-const USER_AGENT =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+// bcc.kz defaults to the Kazakh-language site (redirecting to /kz/) unless
+// the October CMS session has an explicit language preference set via its
+// AJAX framework.
+const BCC_HEADERS = scrapeHeaders(HOME_URL);
 
 export interface ScrapedRate {
   currency: Currency;
@@ -50,13 +50,13 @@ export async function scrapeHomepageRates(): Promise<BccHomepageRates> {
 async function fetchRussianHomepage(): Promise<string> {
   const jar = new Map<string, string>();
 
-  const initial = await fetch(HOME_URL, { headers: { "User-Agent": USER_AGENT } });
+  const initial = await fetch(HOME_URL, { headers: BCC_HEADERS });
   mergeCookies(jar, initial);
 
   const switchLang = await fetch(HOME_URL, {
     method: "POST",
     headers: {
-      "User-Agent": USER_AGENT,
+      ...BCC_HEADERS,
       "X-OCTOBER-REQUEST-HANDLER": "onChangeLang",
       "X-Requested-With": "XMLHttpRequest",
       "Content-Type": "application/x-www-form-urlencoded",
@@ -67,7 +67,7 @@ async function fetchRussianHomepage(): Promise<string> {
   mergeCookies(jar, switchLang);
 
   const res = await fetch(HOME_URL, {
-    headers: { "User-Agent": USER_AGENT, Cookie: cookieHeader(jar) },
+    headers: { ...BCC_HEADERS, Cookie: cookieHeader(jar) },
     cache: "no-store",
   });
   if (!res.ok) {
