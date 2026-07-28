@@ -86,29 +86,38 @@ function RateRow({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3",
+        "flex items-center gap-3 rounded-lg border px-4 py-3",
         disabled ? "bg-muted/50 opacity-60" : "bg-background"
       )}
     >
-      <div className="flex items-center gap-2">
-        <span className="font-medium">{label}</span>
-        {badge && <Badge variant="secondary">{badge}</Badge>}
+      {/* min-w-0 lets this side shrink below its content size so the title
+          truncates instead of pushing the price block off its fixed column. */}
+      <div className="flex min-w-0 flex-1 items-center gap-1.5">
+        <span className="truncate font-medium">{label}</span>
+        {/* Redundant with the page-level FX-open banner, so it's dropped
+            below sm to leave room for the title instead of truncating it
+            down to nothing. */}
+        {badge && (
+          <Badge variant="secondary" className="hidden shrink-0 sm:inline-flex">
+            {badge}
+          </Badge>
+        )}
         {disabled && (
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            <Lock className="h-3 w-3" />
-            {disabledNote}
+          <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
+            <Lock className="h-3 w-3 shrink-0" />
+            <span className="hidden sm:inline">{disabledNote}</span>
           </span>
         )}
         {isFallback && (
           <span
-            className="text-xs text-muted-foreground"
+            className="shrink-0 text-xs text-muted-foreground"
             title="Курс BCC недоступен, показаны резервные данные"
           >
             резерв
           </span>
         )}
       </div>
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex shrink-0 items-center gap-3 text-sm">
         <RateValue label="Продать" value={sellValue} />
         <RateValue label="Купить" value={buyValue} />
       </div>
@@ -118,7 +127,7 @@ function RateRow({
 
 function RateValue({ label, value }: { label: string; value: number }) {
   return (
-    <div className="text-right">
+    <div className="w-16 text-right">
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="text-lg font-bold tabular-nums tracking-tight">{formatRate(value)}</div>
     </div>
