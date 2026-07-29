@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { Header } from "@/components/header";
+import { FxStatusBar } from "@/components/fx-status-bar";
 import { BccBlock } from "@/components/bcc-block";
 import { FxClosedBanner } from "@/components/fx-closed-banner";
 import { BestRateBanner } from "@/components/best-rate-banner";
@@ -119,16 +120,19 @@ export function Dashboard() {
             onCityChange={setCity}
             currency={currency}
             onCurrencyChange={setCurrency}
-            fxStatus={fxStatus}
-            lastUpdated={lastUpdated}
-            nbRate={nbk.rates[currency]}
-            nbRateFallback={nbk.source === "mock"}
-            onRefresh={refresh}
           />
         </div>
       </div>
 
       <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:py-10">
+        <FxStatusBar
+          fxStatus={fxStatus}
+          lastUpdated={lastUpdated}
+          nbRate={nbk.rates[currency]}
+          nbRateFallback={nbk.source === "mock"}
+          onRefresh={refresh}
+        />
+
         {fxStatus !== null && !fxStatus.isOpen && <FxClosedBanner />}
 
         <BccBlock
