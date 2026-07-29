@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, RefreshCw } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,10 @@ interface RatesSectionProps {
   bestBuy: number;
   bestSell: number;
   now: Date | null;
+  /** When banks + exchangers were last fetched from ifin.kz — one shared
+   *  timestamp for both tabs, since a single request returns both. */
+  fetchedAt: Date | null;
+  onRefresh: () => void;
 }
 
 const DEFAULT_VISIBLE = 5;
@@ -32,6 +36,8 @@ export function RatesSection({
   bestBuy,
   bestSell,
   now,
+  fetchedAt,
+  onRefresh,
 }: RatesSectionProps) {
   const [expanded, setExpanded] = useState(false);
   const [sortFocus, setSortFocus] = useState<SortFocus>("sell");
@@ -71,18 +77,23 @@ export function RatesSection({
   const hiddenCount = entries.length - DEFAULT_VISIBLE;
   const noun = activeTab === "bank" ? "банков" : "обменников";
 
-  const freshestLabel = useMemo(() => {
-    if (!now || source.length === 0) return "--";
-    const freshestMs = Math.max(...source.map((e) => new Date(e.updatedAt).getTime()));
-    return formatTime(new Date(freshestMs));
-  }, [source, now]);
-
   return (
     <Card>
       <CardHeader className="space-y-3 pb-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle>Банки и обменники</CardTitle>
-          <span className="text-xs text-muted-foreground">Обновлено: {freshestLabel}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-muted-foreground">
+              Обновлено: {fetchedAt ? formatTime(fetchedAt) : "--"}
+            </span>
+            <button
+              onClick={onRefresh}
+              className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="Обновить банки и обменники"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
         <Tabs value={activeTab} onValueChange={(v) => onTabChange(v as SourceType)}>
           <TabsList>

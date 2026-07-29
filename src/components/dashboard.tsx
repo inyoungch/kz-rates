@@ -109,60 +109,70 @@ export function Dashboard() {
 
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:py-10">
-      <Header
-        city={city}
-        onCityChange={setCity}
-        currency={currency}
-        onCurrencyChange={setCurrency}
-        fxStatus={fxStatus}
-        lastUpdated={lastUpdated}
-        nbRate={nbk.rates[currency]}
-        nbRateFallback={nbk.source === "mock"}
-        onRefresh={refresh}
-      />
+    <div className="min-h-screen">
+      {/* Sticky, full-bleed so it reads as page chrome rather than a card
+          belonging to whatever section happens to sit right below it. */}
+      <div className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="mx-auto max-w-3xl px-4 py-3 sm:py-4">
+          <Header
+            city={city}
+            onCityChange={setCity}
+            currency={currency}
+            onCurrencyChange={setCurrency}
+            fxStatus={fxStatus}
+            lastUpdated={lastUpdated}
+            nbRate={nbk.rates[currency]}
+            nbRateFallback={nbk.source === "mock"}
+            onRefresh={refresh}
+          />
+        </div>
+      </div>
 
-      {fxStatus !== null && !fxStatus.isOpen && <FxClosedBanner />}
+      <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:py-10">
+        {fxStatus !== null && !fxStatus.isOpen && <FxClosedBanner />}
 
-      <BccBlock
-        fxRate={bcc.fx[currency]}
-        branchRate={bcc.branch[currency]}
-        appRate={bcc.app[currency]}
-        fxOpen={fxOpen}
-        fxSource={bcc.fxSource}
-        branchSource={bcc.branchSource}
-        appSource={bcc.appSource}
-      />
+        <BccBlock
+          fxRate={bcc.fx[currency]}
+          branchRate={bcc.branch[currency]}
+          appRate={bcc.app[currency]}
+          fxOpen={fxOpen}
+          fxSource={bcc.fxSource}
+          branchSource={bcc.branchSource}
+          appSource={bcc.appSource}
+        />
 
-      <BestRateBanner
-        bestBuy={
-          activeBest.toBuyEntry
-            ? { name: activeBest.toBuyEntry.name, rate: activeBest.toBuyEntry.buy }
-            : null
-        }
-        bestSell={
-          activeBest.toSellEntry
-            ? { name: activeBest.toSellEntry.name, rate: activeBest.toSellEntry.sell }
-            : null
-        }
-      />
+        <BestRateBanner
+          bestBuy={
+            activeBest.toBuyEntry
+              ? { name: activeBest.toBuyEntry.name, rate: activeBest.toBuyEntry.buy }
+              : null
+          }
+          bestSell={
+            activeBest.toSellEntry
+              ? { name: activeBest.toSellEntry.name, rate: activeBest.toSellEntry.sell }
+              : null
+          }
+        />
 
-      <RatesSection
-        banks={banks}
-        exchangers={exchangers}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        bestBuy={activeBest.toBuyEntry?.buy ?? NaN}
-        bestSell={activeBest.toSellEntry?.sell ?? NaN}
-        now={now}
-      />
+        <RatesSection
+          banks={banks}
+          exchangers={exchangers}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          bestBuy={activeBest.toBuyEntry?.buy ?? NaN}
+          bestSell={activeBest.toSellEntry?.sell ?? NaN}
+          now={now}
+          fetchedAt={ifin.fetchedAt}
+          onRefresh={refetchIfin}
+        />
 
-      <Calculator
-        defaultCurrency={currency}
-        bccFx={bcc.fx}
-        fxOpen={fxOpen}
-        sources={ifin.sources}
-      />
+        <Calculator
+          defaultCurrency={currency}
+          bccFx={bcc.fx}
+          fxOpen={fxOpen}
+          sources={ifin.sources}
+        />
+      </div>
     </div>
   );
 }

@@ -32,7 +32,8 @@ export function Header({
   onRefresh,
 }: HeaderProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
+      <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Курсы валют</h1>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Tabs value={city} onValueChange={(v) => onCityChange(v as City)}>
           <TabsList>
